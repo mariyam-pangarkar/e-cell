@@ -6,9 +6,9 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable MustVerifyEmail
 {
-    use Notifiable;
+    use Notifiable,HasRole;
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +27,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password']=bcrypt($password);
+    }
 
     /**
      * The attributes that should be cast to native types.
