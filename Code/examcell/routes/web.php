@@ -17,9 +17,15 @@ Route::get('/', function () {
 
 Auth::routes(['verify'=>true]);
 
-//Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home');
 //Route::get('/register','RegistersController@create');
-Route::post('/register','RegistersController@store');
+//Route::post('/register','RegistersController@store');
+//Route::post('/login','RegistersController@login');
+
+
+//Route::get('/register','RegistersController@showRegisterForm');
+Route::post('/register','RegistersController@register');
+//Route::get('/register','RegistersController@showLoginForm');
 Route::post('/login','RegistersController@login');
 
-//Route::post('/register','RegistersController@register');
+
