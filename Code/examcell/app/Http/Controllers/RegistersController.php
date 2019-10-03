@@ -4,37 +4,61 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\DB;
-                                             
+
+use App\User;
+use Auth;
+
+use Illuminate\Support\Facades\Hash;    
+ 
+
 class RegistersController extends Controller
 {
     
-    public function store(request $request)
-    {
-    
-            $name=$request->input('name');
-            $email=$request->input('email');
-            $password=$request->input('password');
-
-            echo DB::insert ('insert into users(id,name,email,password) values(?,?,?,?)',[null,$name,$email,$password]);
-        
-    }
-    public function login(request $request)
-    {
-    
-            $email=$request->input('email');
-            $password=$request->input('password');
-
-            $data=DB::select('select id from users where email=? and password=?',[$email,$password]);
-            
-            if(count($data))
-            {
-                echo"You logged in successfully";
-            }
-            else{
-                echo"please enter correct username and password";
-            }
-    }
-
+   public function showRegisterForm(){
+       return view('register');
+   }
+   public function register(Request $request){
+    $this->validation($request);
+    $request['password']=bcrypt($request->password);
+    User::create($request->all());
+    return redirect('/')->with('status','you are registed');
 }
+
+
+
+
+
+  
+public function showLoginForm(){
+    return view('login');
+}
+public function login(Request $request){
+ $this->validate($request,[
+    'email'=>'required|email|max:255',
+    'password'=>'required|max:255',
+   
+ ]);
+if (Auth::attempt(['email'=>$request->email,'password'=>$request->password]))
+{
+   return 'login successfully';
+}
+
+   return 'something wrong';
+ //return redirect('/')->with('status','you are registed');
+}
+
+public function validation($request)
+    {
+       return $this->validate($request,[
+       'name'=>'required|max:255',
+        'email'=>'required|email|unique:users|max:255',
+        'password'=>'required|confirmed|max:255',
+         ]);
+    
+       }
+}
+
+
+
+
+
